@@ -36,9 +36,24 @@ print("contents_list", contents_list)
 
 print("redirect_list", redirect_list)
 
-def main(domain, wordlist):
-    print("main", domain, wordlist)
+def get_world_list(word_path):
+    f = open(word_path, 'r')
+    word_list = []
+
+    while True:
+        path = f.readline()
+        if not path: break
+        word_list.append(path.strip())
+
+    f.close()
+
+    return word_list
+
+def main(domain, word_path, file_extension):
+    print("main", domain, word_path, file_extension)
     
+    word_list = get_world_list(word_path)
+    print("word_list", word_list)
 
 def get_arguments():
     # 1. init
@@ -46,15 +61,12 @@ def get_arguments():
 
     # 2. options
     parser.add_argument('-t', required=True, help='domain', dest="domain")
-    parser.add_argument('-w', required=False, default='', help='wordlist', dest="wordlist")    
+    parser.add_argument('-w', required=False, default='./wordlist.txt', help='word_path', dest="word_path")
+    parser.add_argument('-f', required=False, default='', help='file_extension', dest="file_extension")
 
     # 3. parse
-    args = parser.parse_args()
-    filename_list = args.domain
-    option_list = args.wordlist
-
-    return args.domain, args.wordlist
+    return parser.parse_args()
 
 if __name__ == '__main__':
-    filename_list, option_list = get_arguments()
-    main(filename_list, option_list)
+    args = get_arguments()
+    main(args.domain, args.word_path, args.file_extension)
