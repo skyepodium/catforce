@@ -38,3 +38,5 @@ templates
 services
 info
 profile
+home
+notifications
