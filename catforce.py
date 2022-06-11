@@ -1,12 +1,10 @@
 import sys
 import requests
 import argparse
-
+from tqdm import tqdm
 
 def request(request_url):
-    print("request_url", request_url)
     r = requests.get(request_url, allow_redirects=False)
-    print(r.status_code)
     return r.status_code
 
 
@@ -31,30 +29,52 @@ def make_path(target, path, file_extension):
 
     return f"{target}{path}{file_extension}"
 
+def print_result(contents_list, redirect_list):
+    print()
+    print("=" * 50)
+    print("""\
+        _  __ __      ___
+        |_)|_ (_ | ||   | 
+        | \|____)|_||__ | 
+                    """)    
+
+    print("1. contents_list")
+    for c in contents_list:
+        print(c)
+    print()
+    print("2. redirect_list")
+    for c in redirect_list:
+        print(c)
+
+    print("=" * 50)
+    print()
+    
 def main(target, word_path, file_extension):
     print("main", target, word_path, file_extension)
     
     word_list = get_world_list(word_path)
-
+    print()
+    print("total world count:", len(word_list))
+    print()
     contents_list = []
     redirect_list = []    
 
-    for path in word_list:
+    for path in tqdm(word_list):
         request_url = make_path(target, path, file_extension)
         result_code = request(request_url)
 
         str_result_code = str(result_code)
         first_char = str_result_code[0]
 
+        p = f"/{path}.{file_extension}"
+
         if len(str_result_code) == 3:
             if first_char == "2":
-                contents_list.append(path)
+                contents_list.append(p)
             elif first_char == "3":
-                redirect_list.append(path)      
-
-    print("contents_list", contents_list)
-    print("redirect_list", redirect_list)
-
+                redirect_list.append(p)      
+    
+    print_result(contents_list, redirect_list)
 
 def get_arguments():
     # 1. init
@@ -68,6 +88,19 @@ def get_arguments():
     # 3. parse
     return parser.parse_args()
 
+def print_banner():
+    print("""\
+
+        _________  ______   __________  ____  ____________
+        / ____/   |/_  __/  / ____/ __ \/ __ \/ ____/ ____/
+        / /   / /| | / /    / /_  / / / / /_/ / /   / __/   
+        / /___/ ___ |/ /    / __/ / /_/ / _, _/ /___/ /___   
+        \____/_/  |_/_/    /_/    \____/_/ |_|\____/_____/ 
+
+                    """)
+
 if __name__ == '__main__':
     args = get_arguments()
+    print_banner()
+
     main(args.target, args.word_path, args.file_extension)
