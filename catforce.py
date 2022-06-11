@@ -22,7 +22,6 @@ def get_world_list(word_path):
     return word_list
 
 def make_path(target, path, file_extension):
-    print("target, path, file_extension", target, path, file_extension)
     # 1. exeption
     target = target if target and target[len(target) - 1] == "/" else f"{target}/"
 
@@ -70,13 +69,11 @@ def main(target, word_path, file_extension):
         str_result_code = str(result_code)
         first_char = str_result_code[0]
 
-        p = f"/{path}{file_extension}"
-
         if len(str_result_code) == 3:
             if first_char == "2":
-                contents_list.append(p)
+                contents_list.append(request_url)
             elif first_char == "3":
-                redirect_list.append(p)      
+                redirect_list.append(request_url)      
     
     print_result(contents_list, redirect_list)
 
